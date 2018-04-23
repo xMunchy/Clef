@@ -295,8 +295,10 @@ function _update60()
 	then p1.xe = p1.xs
 	else 
 		p1.xe = 
-			p1.xs - (128/tan(p1.theta))
+			p1.xs + (10*cos(p1.theta))
 	end
+	p1.ye = 
+		p1.ys - (10*sin(p1.theta))
  
   --player 2 movement
  if btn(0,1) then --left
@@ -336,8 +338,10 @@ function _update60()
 	then p2.xe = p2.xs
 	else 
 		p2.xe = 
-			p2.xs - (128/tan(p2.theta))
+			p2.xs + (10*cos(p2.theta))
 	end	
+	p2.ye = 
+		p2.ys + (10*sin(p2.theta))
  
   --shooting, player 1--
  if(btn(4,0)) then
@@ -372,9 +376,9 @@ function _draw()
  spr(p1.s,p1.xs-7,p1.ys-16,2,2)
  spr(p2.s,p2.xs-7,p2.ys,2,2)
  line(p2.xs, p2.ys+8, 
-		p2.xe, p2.ye, 12)
+		p2.xe, p2.ye+8, 12)
 	line(p1.xs, p1.ys-9, 
-		p1.xe, p1.ye, 8)
+		p1.xe, p1.ye-9, 8)
  show_b()
  print(p1.hp,0,0,8)
  print(p2.hp,0,120,8)
