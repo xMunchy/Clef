@@ -201,7 +201,7 @@ function detect_c()
     	and y2>=ly2 and y2<=ry2 or
     x2>=lx2 and x2<=rx2 
     	and y2>=ly2 and y2<=ry2
-     
+     )
    then
     sfx(3)
    end
