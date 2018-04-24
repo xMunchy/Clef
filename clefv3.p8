@@ -50,7 +50,6 @@ function _init()
  hp_spawn.s = 14
  hp_spawn.on = false
  hp_spawn.p = 0.0005
- powerups = {hp_spawn}
 end
 
 -->8
@@ -203,7 +202,6 @@ function hit_bullet()
    end
   end
  end
- 
  return {c1,c2}
 end --end hit_bullet
 
@@ -386,60 +384,56 @@ end --end spawn_stuff
 
 --collision with powerups
 function hit_power()
- for i=1,#powerups do
-  if powerups[i].on then
-  local px = powerups[i].x
-  local py = powerups[i].y
-  local px2 = powerups[i].x2
-  local py2 = powerups[i].y2
+ local px = hp_spawn.x
+ local py = hp_spawn.y
+ local px2 = hp_spawn.x2
+ local py2 = hp_spawn.y2
 
-  --player 1
-  for i=1,#p1.b do
-   local x = p1.b[i].x
-   local y = p1.b[i].y
-   local x2 = p1.b[i].x2
-   local y2 = p1.b[i].y2
+ --player 1
+ for i=1,#p1.b do
+  local x = p1.b[i].x
+  local y = p1.b[i].y
+  local x2 = p1.b[i].x2
+  local y2 = p1.b[i].y2
 
-   if x >= px and x<= px2 and
-      y >= py and y<= py2 or
-      x2 >= px and x2<= px2 and
-      y >= py and y<= py2 or
-      x >= px and x<= px2 and
-      y2 >= py and y2<= py2 or
-      x2 >= px and x2<= px2 and
-      y2 >= py and y2<= py2
-   then
-    if hp_spawn.on then
-     hp_spawn.on = false
-     p1.hp += 1
-    end
-   end --end if
-  end --end for loop
+  if x >= px and x<= px2 and
+     y >= py and y<= py2 or
+     x2 >= px and x2<= px2 and
+     y >= py and y<= py2 or
+     x >= px and x<= px2 and
+     y2 >= py and y2<= py2 or
+     x2 >= px and x2<= px2 and
+     y2 >= py and y2<= py2
+  then
+   if hp_spawn.on then
+    hp_spawn.on = false
+    p1.hp += 1
+   end
+  end --end if
+ end --end for loop
 
-  --player 2 
-  for i=1,#p2.b do
-   local x = p2.b[i].x
-   local y = p2.b[i].y
-   local x2 = p2.b[i].x2
-   local y2 = p2.b[i].y2
-   
-   if x >= px and x<= px2 and
-      y >= py and y<= py2 or
-      x2 >= px and x2<= px2 and
-      y >= py and y<= py2 or
-      x >= px and x<= px2 and
-      y2 >= py and y2<= py2 or
-      x2 >= px and x2<= px2 and
-      y2 >= py and y2<= py2
-   then
-    if hp_spawn.on then
-     hp_spawn.on = false
-     p2.hp += 1
-    end
-   end --end if
-  end --end for loop
- end
- end --end main for loop
+ --player 2 
+ for i=1,#p2.b do
+  local x = p2.b[i].x
+  local y = p2.b[i].y
+  local x2 = p2.b[i].x2
+  local y2 = p2.b[i].y2
+  
+  if x >= px and x<= px2 and
+     y >= py and y<= py2 or
+     x2 >= px and x2<= px2 and
+     y >= py and y<= py2 or
+     x >= px and x<= px2 and
+     y2 >= py and y2<= py2 or
+     x2 >= px and x2<= px2 and
+     y2 >= py and y2<= py2
+  then
+   if hp_spawn.on then
+    hp_spawn.on = false
+    p2.hp += 1
+   end
+  end --end if
+ end --end for loop
 end --end hit_power
 -->8
 --update and draw functions
@@ -558,7 +552,7 @@ function _update60()
  move_b()
  local coll = hit_bullet()
  hit_tank()
- hit_power()
+ if(hp_spawn.on) hit_power()
  react_bhit(coll)
  spawn()
  ptime = time()
