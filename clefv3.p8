@@ -10,9 +10,11 @@ function _init()
  b_sp = 50 --bullet speed
  ptime = time() --prev time
  dt = 0 --time diff betw now and ptime
- boom = {}
- boomt = 0
- boom_s = {11,10,9,8,12}
+ b_boom = {} --bullet collision explosion
+ b_boom_s = {11,10,9,8} --explosion sprites
+ t_boom = {} --tank shot explosion
+ t_boom_s = {26,25,23,21} --explosion sprites
+
   --player 1, red tank--
  p1 = {}
  p1.s = 1 --sprite
@@ -69,15 +71,12 @@ function valid_b(player)
  return k
 end
 
-function invalid_b()
- sfx(1) 
-end
 
 --shoot a bullet
 function shoot(player)
  local k = valid_b(player)
  if(k==-1) then
-  invalid_b()
+  sfx(5)
  else
   sfx(0)
   player.b[k] = {}
@@ -137,8 +136,7 @@ function move_b()
   p2.b[i].y2 = p2.b[i].y+3
  end
  
- 
-end
+end --end move_b
 
 --display bulelts
 function show_b()
@@ -188,36 +186,36 @@ function hit_bullet()
  end
  
  return {c1,c2}
-end
+end --end hit_bullet
 
 --react to bullet hit bullet collisions
 function react_bhit(coll)
  local c1 = coll[1]
  local c2 = coll[2]
- local b = #boom+1
+ local b = #b_boom+1
  
  for i=1,#c1 do
   local k = c1[i]
-  boom[b] = {} --start explosion
-  boom[b].t = time()
-  boom[b].s = 1
-  boom[b].x = p1.b[k].x
-  boom[b].y = p1.b[k].y-1
+  b_boom[b] = {} --start explosion
+  b_boom[b].t = time()
+  b_boom[b].s = 1 --sprite
+  b_boom[b].x = p1.b[k].x
+  b_boom[b].y = p1.b[k].y-1
   b += 1
   p1.b[k].y = 128 --make bullet invalid
  end
  
  for i=1,#c2 do
   local k = c2[i]
-  boom[b] = {} --start explosion
-  boom[b].t = time()
-  boom[b].s = 1
-  boom[b].x = p2.b[k].x
-  boom[b].y = p2.b[k].y
+  b_boom[b] = {} --start explosion
+  b_boom[b].t = time()
+  b_boom[b].s = 1 --sprite
+  b_boom[b].x = p2.b[k].x
+  b_boom[b].y = p2.b[k].y
   b += 1
   p2.b[k].y = -8 --make bullet invalid
  end
-end
+end --end react_bhit
 
 --detect bullet hit tank collisions
 function hit_tank()
@@ -248,10 +246,20 @@ function hit_tank()
      b>=ly1 and b<=ry1
     )
   then
+   --explode
+   sfx(1)
+   local b = #t_boom + 1
+   t_boom[b] = {} --start explosion
+   t_boom[b].t = time()
+   t_boom[b].s = 1 --sprite
+   t_boom[b].x = p2.b[i].x
+   t_boom[b].y = p2.b[i].y
+   
    p2.b[i].y = -8
    p1.hp -= 1
+   
   end
- end
+ end --end for loop
  
   --p1 bullet hit p2 tank
  --x and y = p1 bullets
@@ -268,40 +276,79 @@ function hit_tank()
      y>=ly2 and y<=ry2
     )
   then
+   --explode
+   local b = #t_boom + 1
+   t_boom[b] = {} --start explosion
+   t_boom[b].t = time()
+   t_boom[b].s = 1 --sprite
+   t_boom[b].x = p1.b[i].x
+   t_boom[b].y = p1.b[i].y
+   
    p1.b[i].y = 128
    p2.hp -= 1
   end
- end
-end
+ end --end for loop
+end --end hit_tank
 
---draw explosions
-function explode()
+--draw explosions for bullet collision
+function explode_b()
  local done = {} --contains finished booms
  
- for i=1,#boom do
-  local k = boom[i].s
-  spr(boom_s[k],boom[i].x,boom[i].y)
+ for i=1,#b_boom do
+  local k = b_boom[i].s
+  spr(b_boom_s[k],b_boom[i].x,b_boom[i].y)
 
-  if time()-boom[i].t > 0.1 and
-     k < #boom_s
+  if time()-b_boom[i].t > 0.1 and
+     k < #b_boom_s
   then
-   boom[i].t = time()
-   boom[i].s = k+1
+   b_boom[i].t = time()
+   b_boom[i].s = k+1
    i += 1
-  elseif time()-boom[i].t > 0.5
-         and k == #boom_s
+  elseif time()-b_boom[i].t > 0.5
+         and k == #b_boom_s
   then
    add(done,i)
-  end
-
- end
+  end --end if
+ end --end for loop
  
  while #done > 0 do
   local i = #done
-  boom[done[i]] = nil
+  b_boom[done[i]] = nil
   done[i] = nil
  end
-end
+end --end explode_b
+
+--draw explosions for tank hit
+function explode_t()
+ local done = {} --contains finished booms
+ 
+ for i=1,#t_boom do
+  local k = t_boom[i].s
+  if k < 3 then
+   spr(t_boom_s[k],t_boom[i].x-2,t_boom[i].y)
+  else
+   spr(t_boom_s[k],t_boom[i].x-6,t_boom[i].y-4,2,2)
+  end
+
+  if time()-t_boom[i].t > 0.1 and
+     k < #t_boom_s
+  then
+   t_boom[i].t = time()
+   t_boom[i].s = k+1
+   i += 1
+  elseif time()-t_boom[i].t > 0.5
+         and k == #t_boom_s
+  then
+   add(done,i)
+  end --end if
+ end --end for loop
+ 
+ while #done > 0 do
+  local i = #done
+  t_boom[done[i]] = nil
+  done[i] = nil
+ end
+end --end explode_t
 -->8
 --update and draw functions
 
@@ -434,7 +481,8 @@ function _draw()
  show_b()
  print(p1.hp,0,0,8)
  print(p2.hp,0,120,8)
- explode()
+ explode_b()
+ explode_t()
 end
 __gfx__
 0000000088500000000005880000000000000000066000000660000000aa00005008800500000000000000000000000000000000000000000000000000000000
@@ -543,8 +591,9 @@ __sfx__
 010300003e6503d6503c6503b6503765036650306502e6502a65026650246501f6501b6501865015650126500f6500c6500865005650056500165001650016500165001650016500165001650016500165001650
 0110000020050000000000000000230500000000000000002005000000200500000025050200501e0500000020050000000000027050000000000025050000002505000000280502705020050000000000000000
 0110000020050000002305000000270500000020050000001b0501b0501b050000002005000000200500000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+010700002105021450214502145000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __music__
 01 03444344
-02 05044344
+02 06044344
 
