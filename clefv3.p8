@@ -12,9 +12,9 @@ function _init()
  ptime = time() --prev time
  dt = 0 --time diff betw now and ptime
  b_boom = {} --bullet collision explosion
- b_boom_s = {11,10,9,8} --explosion sprites
+ b_boom_s = {11,10,9,8,32} --explosion sprites
  t_boom = {} --tank shot explosion
- t_boom_s = {26,25,23,21} --explosion sprites
+ t_boom_s = {26,25,23,21,32} --explosion sprites
 
   --player 1, red tank--
  p1 = {}
@@ -312,11 +312,6 @@ function explode_b()
   end --end if
  end --end for loop
  
- while #done > 0 do
-  local i = #done
-  b_boom[done[i]] = nil
-  done[i] = nil
- end
 end --end explode_b
 
 --draw explosions for tank hit
@@ -343,12 +338,7 @@ function explode_t()
    add(done,i)
   end --end if
  end --end for loop
- 
- while #done > 0 do
-  local i = #done
-  t_boom[done[i]] = nil
-  done[i] = nil
- end
+
 end --end explode_t
 -->8
 --update and draw functions
@@ -447,7 +437,7 @@ function _update60()
  	if last1 == false then
  	shoot(p1)
  	last1 = true
- end
+  end
  else last1 = false
  end
   --shooting, player 2--
@@ -455,7 +445,7 @@ function _update60()
  	if last2 == false then
  	shoot(p2)
  	last2 = true
- end
+  end
  else last2 = false
  end
  
