@@ -446,9 +446,9 @@ function _update60()
 	if state == 0 then
 		if btnp(2) then choice-=1 end
 		if btnp(3) then choice+=1 end
-		if choice == 0 then 
-			choice = 2 end
-		if choice == 3 then 
+		if choice <= 0 then 
+			choice = 3 end
+		if choice >= 4 then 
 			choice = 1 end
 		if choice == 1 then
 			if btnp(5) then 
@@ -458,9 +458,14 @@ function _update60()
 		if choice == 2 then
 			if btnp(5) then state = 2 end
 		end
+		if choice == 3 then
+			if btnp(5) then state = 4
+			end
+		end
 		
 		
-	elseif state == 2 then
+	elseif state == 2 
+		or state == 4 then
 		if btnp(5) then state = 0 end
 		
 		
@@ -613,7 +618,18 @@ function _draw()
 	print("controls",51,67,7)
 	else 
 		print("controls",50,67,6)end
+	if(choice == 3) then 
+	print("creators",51,74,7)
+	else 
+		print("creators",50,74,6)end
 		
+	elseif state == 4 then
+		print("dan nguyen", 
+		30, 5, 6)
+		print("wendy nguyen",
+		30, 15, 6)
+		print("jamie chen",
+		30, 25, 6)
 		
 	elseif state == 3 then
 	map(bg,0,0,0,31,31)
