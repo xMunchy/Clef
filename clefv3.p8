@@ -149,8 +149,8 @@ function show_b()
  end
 end
 
---detect collisions
-function detect_c()
+--detect bullet hit bullet collisions
+function hit_bullet()
  local c1 = {}
  local c2 = {}
  
@@ -241,7 +241,8 @@ function hit_tank()
  end
 end
 
-function react_c(coll)
+--react to bullet hit bullet collisions
+function react_bhit(coll)
  local c1 = coll[1]
  local c2 = coll[2]
  cp1 = coll[3]
@@ -255,18 +256,6 @@ function react_c(coll)
   local k = c2[i]
   p2.b[k].y = -8
  end
- 
---[[ for i=1,#cp1 do
-  local k = cp1[i]
-  p1.b[k].y = 128
-  p2.hp -= 1
- end
- 
- for i=1,#cp2 do
-  local k = cp2[i]
-  p2.b[k].y = 128
-  p1.hp -= 1
- end--]]
 end
 -->8
 --update and draw functions
@@ -383,9 +372,9 @@ function _update60()
  p2.muzzley = p2.ys+8
  
  move_b()
- local coll = detect_c()
+ local coll = hit_bullet()
  hit_tank()
- react_c(coll)
+ react_bhit(coll)
  ptime = time()
 end
 
@@ -400,12 +389,6 @@ function _draw()
  show_b()
  print(p1.hp,0,0,8)
  print(p2.hp,0,120,8)
- local lx2=p2.xs-7
- local ly2=p2.ys+5
- local rx2=p2.xs+7
- local ry2=p2.ys+15
- spr(8,lx2,ly2)
- spr(8,rx2,ry2)
 end
 __gfx__
 0000000088444444444448800000000000000000066000000660000000aa000090000000b0000000000000000000000000000000000000000000000000000000
