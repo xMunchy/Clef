@@ -276,21 +276,30 @@ end
 
 --draw explosions
 function explode()
+ local done = {} --contains finished booms
+ 
  for i=1,#boom do
   local k = boom[i].s
   spr(boom_s[k],boom[i].x,boom[i].y)
+
   if time()-boom[i].t > 0.1 and
      k < #boom_s
   then
    boom[i].t = time()
    boom[i].s = k+1
    i += 1
-  end
---[[  if time()-boom[i].t > 0.5 and
-     k == #boom_s
+  elseif time()-boom[i].t > 0.5
+         and k == #boom_s
   then
-   boom[i].done = true
-  end--]]
+   add(done,i)
+  end
+
+ end
+ 
+ while #done > 0 do
+  local i = #done
+  boom[done[i]] = nil
+  done[i] = nil
  end
 end
 -->8
