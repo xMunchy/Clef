@@ -109,6 +109,7 @@ function move_b()
   end
   p1.b[i].x += p1.b[i].xv
   
+  p1.b[i].x2 = p1.b[i].x+3
   p1.b[i].y2 = p1.b[i].y+3
  end
  
@@ -129,6 +130,7 @@ function move_b()
   p2.b[i].x += p2.b[i].xv
   
   
+  p2.b[i].x2 = p2.b[i].x+3
   p2.b[i].y2 = p2.b[i].y+3
  end
  
@@ -147,23 +149,10 @@ function show_b()
  end
 end
 
+--detect collisions
 function detect_c()
  local c1 = {}
  local c2 = {}
- local cp1 = {}
- local cp2 = {}
- 
-  --collision box for p1
- local lx1=p1.xs-7
- local ly1=p1.ys-16
- local rx1=p1.xs+7
- local ry1=p1.ys-6
-   
-  --collision box for p2
- local lx2=p2.xs-7
- local ly2=p2.ys+5
- local rx2=p2.xs+7
- local ry2=p2.ys+15
  
  for i=1,#p1.b do
   local x = p1.b[i].x
@@ -191,37 +180,65 @@ function detect_c()
     add(c1,i)
     add(c2,j)
    end
-   
-
-   
-   --p1 bullet hit tank 2
-   --x and y = p1 bullets
-   if(
-    x>=lx2 and x<=rx2 
-    	and y2>=ly2 and y2<=ry2 or
-    x2>=lx2 and x2<=rx2 
-    	and y2>=ly2 and y2<=ry2
-     )
-   then
-    sfx(3)
-   end
-   
-   --p2 bullet hit tank 1
-   --a and b = p2 bullets
-   if(
-    a>=lx1 and a<=rx1 
-    	and b>=ly1 and b<=ry1 or
-    a2>=lx1 and a2<=rx1 
-    	and b>=ly1 and b<=ry1
-    )
-   then
-    sfx(3)
-   end
-
   end
  end
  
- return {c1,c2,cp1,cp2}
+ return {c1,c2}
+end
+
+--detect bullet hit tank collisions
+function hit_tank()
+ --collision box for p1
+ local lx1=p1.xs-7
+ local ly1=p1.ys-16
+ local rx1=p1.xs+7
+ local ry1=p1.ys-6
+ 
+ --collision box for p2
+ local lx2=p2.xs-7
+ local ly2=p2.ys+5
+ local rx2=p2.xs+7
+ local ry2=p2.ys+15
+ 
+ --p2 bullet hit p1 tank
+ --a and b = p2 bullets
+ for i=1,#p2.b do
+  local a = p2.b[i].x
+  local b = p2.b[i].y
+  local a2 = p2.b[i].x2
+  local b2 = p2.b[i].y2
+  
+  if(
+     a>=lx1 and a<=rx1 and
+     b>=ly1 and b<=ry1 or
+     a2>=lx1 and a2<=rx1 and
+     b>=ly1 and b<=ry1
+    )
+  then
+   p2.b[i].y = -8
+   p1.hp -= 1
+  end
+ end
+ 
+  --p1 bullet hit p2 tank
+ --x and y = p1 bullets
+ for i=1,#p1.b do
+  local x = p1.b[i].x
+  local y = p1.b[i].y
+  local x2 = p1.b[i].x2
+  local y2 = p1.b[i].y2
+  
+  if(
+     x>=lx2 and x<=rx2 and
+     y>=ly2 and y<=ry2 or
+     x2>=lx2 and x2<=rx2 and
+     y>=ly2 and y<=ry2
+    )
+  then
+   p1.b[i].y = 128
+   p2.hp -= 1
+  end
+ end
 end
 
 function react_c(coll)
@@ -239,7 +256,7 @@ function react_c(coll)
   p2.b[k].y = -8
  end
  
- for i=1,#cp1 do
+--[[ for i=1,#cp1 do
   local k = cp1[i]
   p1.b[k].y = 128
   p2.hp -= 1
@@ -249,7 +266,7 @@ function react_c(coll)
   local k = cp2[i]
   p2.b[k].y = 128
   p1.hp -= 1
- end
+ end--]]
 end
 -->8
 --update and draw functions
@@ -367,6 +384,7 @@ function _update60()
  
  move_b()
  local coll = detect_c()
+ hit_tank()
  react_c(coll)
  ptime = time()
 end
@@ -382,12 +400,12 @@ function _draw()
  show_b()
  print(p1.hp,0,0,8)
  print(p2.hp,0,120,8)
- local lx1=p1.xs-7
- local ly1=p1.ys-16
- local rx1=p1.xs+7
- local ry1=p1.ys-6
- spr(8,lx1,ly1)
- spr(8,rx1,ry1)
+ local lx2=p2.xs-7
+ local ly2=p2.ys+5
+ local rx2=p2.xs+7
+ local ry2=p2.ys+15
+ spr(8,lx2,ly2)
+ spr(8,rx2,ry2)
 end
 __gfx__
 0000000088444444444448800000000000000000066000000660000000aa000090000000b0000000000000000000000000000000000000000000000000000000
@@ -412,4 +430,4 @@ __gff__
 __sfx__
 010500000a750107501c7502a7502e7502d6532d6532c6532c6532c6532c6532a653286532665324653216531e6531b65317653116530c6530a65307653056530365302653026530165301653016530165301653
 011000001805018050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-011000003067030670306703067000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+011000001817018170181701817000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
