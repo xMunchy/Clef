@@ -202,7 +202,6 @@ function hit_bullet()
    end
   end
  end
- 
  return {c1,c2}
 end --end hit_bullet
 
@@ -295,6 +294,7 @@ function hit_tank()
     )
   then
    --explode
+   sfx(1)
    local b = #t_boom + 1
    t_boom[b] = {} --start explosion
    t_boom[b].t = time()
@@ -384,10 +384,10 @@ end --end spawn_stuff
 
 --collision with powerups
 function hit_power()
- local hx = hp_spawn.x
- local hy = hp_spawn.y
- local hx2 = hp_spawn.x2
- local hy2 = hp_spawn.y2
+ local px = hp_spawn.x
+ local py = hp_spawn.y
+ local px2 = hp_spawn.x2
+ local py2 = hp_spawn.y2
 
  --player 1
  for i=1,#p1.b do
@@ -395,15 +395,15 @@ function hit_power()
   local y = p1.b[i].y
   local x2 = p1.b[i].x2
   local y2 = p1.b[i].y2
-  
-  if x >= hx and x<= hx2 and
-     y >= hy and y<= hy2 or
-     x2 >= hx and x2<= hx2 and
-     y >= hy and y<= hy2 or
-     x >= hx and x<= hx2 and
-     y2 >= hy and y2<= hy2 or
-     x2 >= hx and x2<= hx2 and
-     y2 >= hy and y2<= hy2
+
+  if x >= px and x<= px2 and
+     y >= py and y<= py2 or
+     x2 >= px and x2<= px2 and
+     y >= py and y<= py2 or
+     x >= px and x<= px2 and
+     y2 >= py and y2<= py2 or
+     x2 >= px and x2<= px2 and
+     y2 >= py and y2<= py2
   then
    if hp_spawn.on then
     hp_spawn.on = false
@@ -419,14 +419,14 @@ function hit_power()
   local x2 = p2.b[i].x2
   local y2 = p2.b[i].y2
   
-  if x >= hx and x<= hx2 and
-     y >= hy and y<= hy2 or
-     x2 >= hx and x2<= hx2 and
-     y >= hy and y<= hy2 or
-     x >= hx and x<= hx2 and
-     y2 >= hy and y2<= hy2 or
-     x2 >= hx and x2<= hx2 and
-     y2 >= hy and y2<= hy2
+  if x >= px and x<= px2 and
+     y >= py and y<= py2 or
+     x2 >= px and x2<= px2 and
+     y >= py and y<= py2 or
+     x >= px and x<= px2 and
+     y2 >= py and y2<= py2 or
+     x2 >= px and x2<= px2 and
+     y2 >= py and y2<= py2
   then
    if hp_spawn.on then
     hp_spawn.on = false
