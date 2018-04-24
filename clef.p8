@@ -668,7 +668,7 @@ function _draw()
 		30, 15, 6)
 		print("aim: up/down",
 			30, 25, 6)
-		print("fire: z",
+		print("fire: n",
 			30, 35, 6)
 			print("player2", 
 		30, 50, 6)
@@ -678,7 +678,7 @@ function _draw()
 			30, 70, 6)
 		print("fire: tab",
 			30, 80, 6)
-		print("press x",
+		print("next: x",
 			30, 100, 6)
 	elseif state == 1 then
  map(bg,0,0,0,31,31)
